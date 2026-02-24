@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- ENCABEZADO DE LA SALA -->
+    <div class="mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body text-white py-5">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="display-5 fw-bold mb-2">🏆 {{ room.name }}</h1>
+                        <p class="mb-1">Código: <code class="bg-white bg-opacity-20 px-3 py-1 rounded">{{ room.code }}</code></p>
+                        <small>Creada por: <strong>{{ room.created_by.username }}</strong></small>
+                    </div>
+                    <div class="text-end">
+                        <div class="display-6 mb-2">{{ usuarios|length }}</div>
+                        <small>Participantes</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- CONTROLES -->
+    <div class="mb-4">
+        <div class="row gap-2">
+            <div class="col-auto">
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#copiarCodigoModal">
+                    📋 Compartir Código
+                </button>
+            </div>
+            {% if es_creador %}
+            <div class="col-auto">
+                <form method="POST" action="{% url 'dejar_sala' room.code %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger" onclick="return confirm('¿Cerrar la sala?')">
+                        🔒 Cerrar Sala
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <div class="col-auto">
+                <form method="POST" action="{% url 'dejar_sala' room.code %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-warning">
+                        👋 Dejar Sala
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- TABLA DE CLASIFICACIÓN -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-11">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <h5 class="mb-0 fw-bold">🏁 Ranking de Pilotos</h5>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 80px;" class="text-center">Pos.</th>
+                                    <th>Usuario</th>
+                                    <th class="text-end" style="width: 120px;">Puntos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                <tr {% if forloop.counter == 1 %}class="table-warning" {% elif forloop.counter == 2 %}class="table-light border-start border-3 border-secondary" {% elif forloop.counter == 3 %}class="bg-warning bg-opacity-25 border-start border-3 border-danger" {% endif %} {% if usuario == request.user %}style="background-color: rgba(13, 110, 253, 0.1) !important;" {% endif %}>
+                                    <td class="text-center fw-bold">
+                                        {% if forloop.counter == 1 %}
+                                        <span class="fs-3">🥇</span>
+                                        {% elif forloop.counter == 2 %}
+                                        <span class="fs-3">🥈</span>
+                                        {% elif forloop.counter == 3 %}
+                                        <span class="fs-3">🥉</span>
+                                        {% else %}
+                                        <span class="badge bg-light text-dark border fs-6">{{ forloop.counter }}</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-primary">{{ usuario.username|slice:":1"|upper }}</span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    {{ usuario.username }}
+                                                    {% if usuario == request.user %}
+                                                    <span class="badge bg-primary ms-2">Tú</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-end">
+                                        <span class="badge fs-6 px-3 py-2 {% if forloop.counter == 1 %}bg-warning text-dark{% elif forloop.counter == 2 %}bg-secondary{% elif forloop.counter == 3 %}bg-danger{% else %}bg-dark{% endif %}">
+                                            {{ usuario.total_puntos|floatformat:1|default:0 }} pts
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center py-5">
+                                        <p class="text-muted mb-0">No hay usuarios en esta sala</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL COPIAR CÓDIGO -->
+<div class="modal fade" id="copiarCodigoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📋 Compartir Sala</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Comparte este código con tus amigos:</p>
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-lg text-center fw-bold" id="codigoSala" value="{{ room.code }}" readonly>
+                    <button class="btn btn-primary" onclick="copiarCodigo()">📋 Copiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copiarCodigo() {
+    const codigo = document.getElementById('codigoSala');
+    codigo.select();
+    document.execCommand('copy');
+    alert('¡Código copiado!');
+}
+</script>
+
+{% endblock %}

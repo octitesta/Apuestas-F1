@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Título -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="display-6 fw-bold text-dark mb-1">
+                ⚙️ Panel de Administración
+            </h1>
+            <p class="text-muted mb-0">Gestión de carreras y resultados</p>
+        </div>
+        <span class="badge bg-danger fs-6 px-3 py-2">🔒 Solo Admin</span>
+    </div>
+
+    <!-- Mensajes -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+        {% if message.tags == 'success' %}✅{% elif message.tags == 'error' %}❌{% else %}ℹ️{% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Lista de Carreras -->
+    <div class="row g-4">
+        {% for carrera in carreras %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header py-3 text-white"
+                    style="background: linear-gradient(135deg,
+                        {% if carrera.estado == 'finalizada' %}#10b981, #059669
+                        {% elif carrera.estado == 'en_curso' %}#ef4444, #dc2626
+                        {% elif carrera.estado == 'qualy_cargada' %}#f59e0b, #d97706
+                        {% else %}#6b7280, #4b5563
+                        {% endif %});">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">
+                            {% if carrera.estado == 'finalizada' %}✅
+                            {% elif carrera.estado == 'en_curso' %}🏎️
+                            {% elif carrera.estado == 'qualy_cargada' %}🏁
+                            {% else %}⏸️
+                            {% endif %}
+                            {{ carrera.name }}
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">📅 {{ carrera.date|date:"d/m/Y H:i" }}</span>
+                        <span class="badge px-3 py-2
+                            {% if carrera.estado == 'finalizada' %}bg-success
+                            {% elif carrera.estado == 'en_curso' %}bg-danger
+                            {% elif carrera.estado == 'qualy_cargada' %}bg-warning text-dark
+                            {% else %}bg-secondary
+                            {% endif %}">
+                            {{ carrera.get_estado_display }}
+                        </span>
+                    </div>
+
+                    <!-- Barra de progreso visual -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">Progreso</small>
+                            <small class="text-muted">
+                                {% if carrera.estado == 'finalizada' %}100%
+                                {% elif carrera.estado == 'en_curso' %}75%
+                                {% elif carrera.estado == 'qualy_cargada' %}50%
+                                {% else %}0%
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar
+                                {% if carrera.estado == 'finalizada' %}bg-success
+                                {% elif carrera.estado == 'en_curso' %}bg-danger
+                                {% elif carrera.estado == 'qualy_cargada' %}bg-warning
+                                {% else %}bg-secondary
+                                {% endif %}"
+                                style="width:
+                                {% if carrera.estado == 'finalizada' %}100%
+                                {% elif carrera.estado == 'en_curso' %}75%
+                                {% elif carrera.estado == 'qualy_cargada' %}50%
+                                {% else %}0%
+                                {% endif %}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pasos del flujo -->
+                    <div class="d-flex justify-content-between text-center mb-3" style="font-size: 0.75rem;">
+                        <div>
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1
+                                {% if carrera.estado != 'pendiente' %}bg-success text-white{% else %}bg-light text-muted border{% endif %}"
+                                style="width: 28px; height: 28px;">
+                                {% if carrera.estado != 'pendiente' %}✓{% else %}1{% endif %}
+                            </div>
+                            <div class="text-muted">Qualy</div>
+                        </div>
+                        <div>
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1
+                                {% if carrera.estado == 'en_curso' or carrera.estado == 'finalizada' %}bg-success text-white{% else %}bg-light text-muted border{% endif %}"
+                                style="width: 28px; height: 28px;">
+                                {% if carrera.estado == 'en_curso' or carrera.estado == 'finalizada' %}✓{% else %}2{% endif %}
+                            </div>
+                            <div class="text-muted">En Curso</div>
+                        </div>
+                        <div>
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1
+                                {% if carrera.estado == 'finalizada' %}bg-success text-white{% else %}bg-light text-muted border{% endif %}"
+                                style="width: 28px; height: 28px;">
+                                {% if carrera.estado == 'finalizada' %}✓{% else %}3{% endif %}
+                            </div>
+                            <div class="text-muted">Finalizada</div>
+                        </div>
+                    </div>
+
+                    <!-- Botón de acción según estado -->
+                    {% if carrera.estado == 'pendiente' %}
+                    <button class="btn btn-primary w-100 fw-semibold" data-bs-toggle="modal"
+                        data-bs-target="#modalQualy{{ carrera.id }}">
+                        🏁 Cargar Clasificación
+                    </button>
+
+                    {% elif carrera.estado == 'qualy_cargada' %}
+                    <form method="post" action="{% url 'admin_marcar_en_curso' carrera.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100 fw-semibold"
+                            onclick="return confirm('¿Marcar {{ carrera.name }} como en curso?')">
+                            🏎️ Marcar En Curso
+                        </button>
+                    </form>
+
+                    {% elif carrera.estado == 'en_curso' %}
+                    <button class="btn btn-success w-100 fw-semibold" data-bs-toggle="modal"
+                        data-bs-target="#modalFinalizar{{ carrera.id }}">
+                        ✅ Finalizar Carrera
+                    </button>
+
+                    {% else %}
+                    <button class="btn btn-secondary w-100 fw-semibold" disabled>
+                        ✅ Carrera Finalizada
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: Cargar Qualy -->
+        {% if carrera.estado == 'pendiente' %}
+        <div class="modal fade" id="modalQualy{{ carrera.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
+                        <h5 class="modal-title fw-bold">🏁 Cargar Qualy - {{ carrera.name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" action="{% url 'admin_cargar_qualy' carrera.id %}" id="formQualy{{ carrera.id }}">
+                        {% csrf_token %}
+                        <div class="modal-body p-4">
+                            <p class="text-muted mb-3">Asigná la posición de clasificación a cada piloto:</p>
+                            {% for piloto in pilotos %}
+                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                                        style="width: 40px; height: 40px;">
+                                        <span class="fw-bold text-primary">{{ piloto.name|slice:":1"|upper }}</span>
+                                    </div>
+                                    <span class="fw-semibold">{{ piloto.name }}</span>
+                                </div>
+                                <div style="width: 100px;">
+                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm qualy-select"
+                                        data-form="formQualy{{ carrera.id }}" required>
+                                        <option value="">Pos.</option>
+                                        {% for i in positions %}
+                                        <option value="{{ i }}">P{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary fw-semibold">
+                                🏁 Guardar Clasificación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- MODAL: Finalizar Carrera -->
+        {% if carrera.estado == 'en_curso' %}
+        <div class="modal fade" id="modalFinalizar{{ carrera.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        <h5 class="modal-title fw-bold">✅ Finalizar - {{ carrera.name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" action="{% url 'admin_finalizar_carrera' carrera.id %}" id="formFinalizar{{ carrera.id }}">
+                        {% csrf_token %}
+                        <div class="modal-body p-4">
+                            <p class="text-muted mb-3">Asigná la posición final de carrera a cada piloto:</p>
+                            {% for piloto in pilotos %}
+                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                                        style="width: 40px; height: 40px;">
+                                        <span class="fw-bold text-success">{{ piloto.name|slice:":1"|upper }}</span>
+                                    </div>
+                                    <span class="fw-semibold">{{ piloto.name }}</span>
+                                </div>
+                                <div style="width: 100px;">
+                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm carrera-select"
+                                        data-form="formFinalizar{{ carrera.id }}" required>
+                                        <option value="">Pos.</option>
+                                        {% for i in positions %}
+                                        <option value="{{ i }}">P{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success fw-semibold">
+                                ✅ Finalizar y Calcular Puntos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- JS: Validación de posiciones duplicadas -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form[id^="formQualy"], form[id^="formFinalizar"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            const selects = form.querySelectorAll('select');
+            const values = [];
+            let hasEmpty = false;
+            let hasDuplicate = false;
+
+            selects.forEach(function(select) {
+                if (!select.value) {
+                    hasEmpty = true;
+                } else if (values.includes(select.value)) {
+                    hasDuplicate = true;
+                } else {
+                    values.push(select.value);
+                }
+            });
+
+            if (hasEmpty) {
+                e.preventDefault();
+                alert('Completá todas las posiciones antes de guardar.');
+                return;
+            }
+
+            if (hasDuplicate) {
+                e.preventDefault();
+                alert('Hay posiciones duplicadas. Cada piloto debe tener una posición diferente.');
+                return;
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

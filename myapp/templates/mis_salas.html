@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-5">🏆 Mis Salas</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row gap-4">
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="col-12">
+            <a href="{% url 'crear_sala' %}" class="btn btn-primary btn-lg">
+                ➕ Crear Nueva Sala
+            </a>
+            <a href="{% url 'unirse_sala' %}" class="btn btn-success btn-lg">
+                🎯 Unirse a una Sala
+            </a>
+        </div>
+
+        <!-- SALAS CREADAS -->
+        {% if salas_creadas %}
+        <div class="col-12">
+            <h4 class="mb-3">📌 Salas que Creaste</h4>
+            <div class="row">
+                {% for sala in salas_creadas %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ sala.name }}</h5>
+                            <p class="text-muted small mb-2">
+                                <strong>Código:</strong> {{ sala.code }}
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Miembros:</strong> {{ sala.members.count }}
+                            </p>
+                            <a href="{% url 'home_sala' sala.code %}" class="btn btn-primary btn-sm">
+                                Ver Sala →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SALAS A LAS QUE PERTENECES -->
+        {% if salas_miembro %}
+        <div class="col-12">
+            <h4 class="mb-3">🎯 Salas a las que Perteneces</h4>
+            <div class="row">
+                {% for sala in salas_miembro %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ sala.name }}</h5>
+                            <p class="text-muted small mb-2">
+                                <strong>Creada por:</strong> {{ sala.created_by.username }}
+                            </p>
+                            <p class="text-muted small mb-3">
+                                <strong>Miembros:</strong> {{ sala.members.count }}
+                            </p>
+                            <a href="{% url 'home_sala' sala.code %}" class="btn btn-info btn-sm">
+                                Ver Sala →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SIN SALAS -->
+        {% if not salas_creadas and not salas_miembro %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-5">
+                <h5>😢 Aún no tienes salas</h5>
+                <p class="text-muted mb-3">¡Crea una o únete a una existente para competir!</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

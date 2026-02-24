@@ -1,0 +1,35 @@
+<!-- templates/includes/no_apuestas.html -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                        <span style="font-size: 3rem;">⏸️</span>
+                    </div>
+                    <h3 class="fw-bold text-dark">No hay apuestas abiertas</h3>
+                    <p class="text-muted mb-0">Las apuestas están cerradas en este momento</p>
+                </div>
+
+                {% if proxima %}
+                    <div class="alert alert-info border-0 shadow-sm mx-auto" style="max-width: 400px;">
+                        <div class="mb-2">
+                            <small class="text-uppercase fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Próxima Carrera</small>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">{{ proxima.name }}</h5>
+                        <div class="d-inline-block px-3 py-2 bg-white rounded-pill">
+                            <span class="text-muted">📅 {{ proxima.date|date:"d/m/Y H:i" }}</span>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-3">
+                        <small>Te notificaremos cuando se abran las apuestas</small>
+                    </p>
+                {% else %}
+                    <div class="alert alert-warning border-0 mt-4 mx-auto" style="max-width: 400px;">
+                        <p class="mb-0">No hay carreras programadas en este momento</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

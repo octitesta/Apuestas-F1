@@ -1,0 +1,337 @@
+﻿{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Título de la página -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-dark mb-2">
+            🏆 Clasificación General
+        </h1>
+        <p class="lead text-muted">Tabla de posiciones del campeonato</p>
+    </div>
+
+    <div class="row justify-content-center g-3">
+        <div class="col-12 col-xl-11">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white py-3"
+                    style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <span class="fs-4 me-2">🏁</span>
+                            <h5 class="mb-0 fw-bold">Ranking de Pilotos</h5>
+                        </div>
+                        <span class="badge bg-white text-dark">{{ usuarios|length }} participantes</span>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <!-- Tabs de navegación -->
+                    <div class="overflow-auto border-bottom">
+                        <ul class="nav nav-tabs border-0 flex-nowrap" id="clasificacionTabs" role="tablist"
+                            style="min-width: max-content;">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-semibold px-4" id="general-tab" data-bs-toggle="tab"
+                                    data-bs-target="#general" type="button" role="tab">
+                                    📊 General
+                                </button>
+                            </li>
+                            {% for dato in datos_por_carrera %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-semibold px-4" id="carrera-{{ forloop.counter }}-tab"
+                                    data-bs-toggle="tab" data-bs-target="#carrera-{{ forloop.counter }}" type="button"
+                                    role="tab">
+                                    {% if dato.carrera.estado == "finalizada" %}
+                                    ✅
+                                    {% elif dato.carrera.estado == "en_curso" %}
+                                    🏎️
+                                    {% elif dato.carrera.estado == "qualy_cargada" %}
+                                    🏁
+                                    {% else %}
+                                    ⏸️
+                                    {% endif %}
+                                    {{ dato.carrera.name|truncatewords:3 }}
+                                </button>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Contenido de los tabs -->
+                    <div class="tab-content" id="clasificacionTabsContent">
+                        <!-- TAB GENERAL -->
+                        <div class="tab-pane fade show active" id="general" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 80px;" class="text-center">Pos.</th>
+                                            <th>Usuario</th>
+                                            <th class="text-end" style="width: 120px;">Puntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for usuario in usuarios %}
+                                        <tr {% if forloop.counter == 1 %}class="table-warning"{% elif forloop.counter == 2 %}class="table-light border-start border-3 border-secondary"{% elif forloop.counter == 3 %}class="bg-warning bg-opacity-25 border-start border-3 border-danger"{% endif %} {% if usuario == request.user %}style="background-color: rgba(13, 110, 253, 0.1) !important;"{% endif %}>
+                                            <td class="text-center fw-bold">
+                                                {% if forloop.counter == 1 %}
+                                                <span class="fs-3">🥇</span>
+                                                {% elif forloop.counter == 2 %}
+                                                <span class="fs-3">🥈</span>
+                                                {% elif forloop.counter == 3 %}
+                                                <span class="fs-3">🥉</span>
+                                                {% else %}
+                                                <span class="badge bg-light text-dark border fs-6">{{ forloop.counter }}</span>
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                                                        style="width: 40px; height: 40px;">
+                                                        <span class="fw-bold text-primary">{{ usuario.username|slice:":1"|upper }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-semibold">
+                                                            {{ usuario.username }}
+                                                            {% if usuario == request.user %}
+                                                            <span class="badge bg-primary ms-2">Tú</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% if forloop.counter <= 3 %} <small class="text-muted">
+                                                            {% if forloop.counter == 1 %}
+                                                            🏆 Campeón actual
+                                                            {% elif forloop.counter == 2 %}
+                                                            🥈 Subcampeón
+                                                            {% elif forloop.counter == 3 %}
+                                                            🥉 Tercer lugar
+                                                            {% endif %}
+                                                            </small>
+                                                            {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-end">
+                                                <span
+                                                    class="badge fs-6 px-3 py-2 {% if forloop.counter == 1 %}bg-warning text-dark{% elif forloop.counter == 2 %}bg-secondary{% elif forloop.counter == 3 %}bg-danger{% else %}bg-dark{% endif %}">
+                                                    {{ usuario.total_puntos|floatformat:1|default:0 }} pts
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center py-5">
+                                                <div class="text-muted mb-3">
+                                                    <span style="font-size: 3rem;">📊</span>
+                                                </div>
+                                                <p class="text-muted mb-0">
+                                                    No hay usuarios clasificados aún.<br>
+                                                    <small>¡Sé el primero en apostar!</small>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TABS POR CARRERA -->
+                        {% for dato in datos_por_carrera %}
+                        <div class="tab-pane fade" id="carrera-{{ forloop.counter }}" role="tabpanel">
+                            <div class="p-3 bg-light border-bottom">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1 fw-bold">{{ dato.carrera.name }}</h5>
+                                        <small class="text-muted">📅 {{ dato.carrera.date|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    <div>
+                                        {% if dato.carrera.estado == "finalizada" %}
+                                        <span class="badge bg-success">✅ Finalizada</span>
+                                        {% elif dato.carrera.estado == "en_curso" %}
+                                        <span class="badge bg-danger">🏎️ En Curso</span>
+                                        {% elif dato.carrera.estado == "qualy_cargada" %}
+                                        <span class="badge bg-warning text-dark">🏁 Apuestas Abiertas</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">⏸️ Pendiente</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MOSTRAR DETALLE SOLO SI LA CARRERA ESTÁ EN CURSO O FINALIZADA -->
+                            {% if dato.carrera.estado == "finalizada" or dato.carrera.estado == "en_curso" %}
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 60px;" class="text-center">Pos.</th>
+                                            <th style="width: 180px;">Usuario</th>
+                                            <th>Piloto</th>
+                                            <th class="text-center" style="width: 90px;">Salida</th>
+                                            <th class="text-center" style="width: 90px;">Llegada</th>
+                                            <th class="text-center" style="width: 100px;">Mult.</th>
+                                            <th class="text-end" style="width: 130px;">Puntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for usuario in dato.usuarios_ordenados %}
+                                        {% with puntos_usuario=dato.puntos|get_item:usuario.id %}
+                                        <tr {% if usuario == request.user %}style="background-color: rgba(13, 110, 253, 0.1);"{% endif %}>
+                                            <td class="text-center">
+                                                <span class="badge bg-light text-dark border">{{ forloop.counter }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                                                        style="width: 32px; height: 32px;">
+                                                        <span class="fw-bold text-primary small">{{ usuario.username|slice:":1"|upper }}</span>
+                                                    </div>
+                                                    <span class="fw-semibold small">
+                                                        {{ usuario.username }}
+                                                        {% if usuario == request.user %}
+                                                        <span class="badge bg-primary ms-1"
+                                                            style="font-size: 0.65rem;">Tú</span>
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {% if puntos_usuario %}
+                                                <span class="text-dark small">🏎️ {{ puntos_usuario.piloto }}</span>
+                                                {% else %}
+                                                <span class="text-muted fst-italic small">No apostó</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if puntos_usuario and puntos_usuario.pos_qualy %}
+                                                <span class="badge bg-info text-dark">P{{ puntos_usuario.pos_qualy }}</span>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if puntos_usuario and puntos_usuario.pos_carrera %}
+                                                <span class="badge bg-dark">P{{ puntos_usuario.pos_carrera }}</span>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if puntos_usuario and puntos_usuario.multiplicador %}
+                                                <span class="badge bg-purple text-white"
+                                                    style="background-color: #7c3aed;">×{{ puntos_usuario.multiplicador }}</span>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                {% if puntos_usuario %}
+                                                {% with puntos=puntos_usuario.puntos %}
+                                                <span
+                                                    class="badge {% if puntos > 0 %}bg-success{% else %}bg-secondary{% endif %} fs-6 px-3 py-2">
+                                                    {{ puntos|floatformat:1 }} pts
+                                                </span>
+                                                {% endwith %}
+                                                {% else %}
+                                                <span class="badge bg-light text-muted border fs-6 px-3 py-2">-
+                                                    pts</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endwith %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <!-- MOSTRAR SOLO ESTADÍSTICAS (SIN NOMBRES NI PILOTOS) -->
+                            <div class="p-5">
+                                <div class="text-center mb-4">
+                                    <div class="text-muted mb-3">
+                                        <span style="font-size: 3rem;">🔒</span>
+                                    </div>
+                                    <h5 class="text-dark mb-2">Apuestas Cerradas</h5>
+                                    <p class="text-muted mb-4">
+                                        Las apuestas se revelarán cuando la carrera comience
+                                    </p>
+                                </div>
+
+                                <div class="row justify-content-center">
+                                    <div class="col-md-6">
+                                        <div class="card bg-light border-0 shadow-sm">
+                                            <div class="card-body text-center py-4">
+                                                <div class="row">
+                                                    <div class="col-6 border-end">
+                                                        <div class="mb-2">
+                                                            <span class="display-4 fw-bold text-primary">{{ dato.puntos|length }}</span>
+                                                        </div>
+                                                        <small class="text-muted text-uppercase">Apuestas
+                                                            realizadas</small>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="mb-2">
+                                                            {% with puntos_usuario=dato.puntos|get_item:request.user.id %}
+                                                            {% if puntos_usuario %}
+                                                            <span class="display-4 text-success">✅</span>
+                                                            {% else %}
+                                                            <span class="display-4 text-warning">⏳</span>
+                                                            {% endif %}
+                                                            {% endwith %}
+                                                        </div>
+                                                        <small class="text-muted text-uppercase">
+                                                            {% with puntos_usuario=dato.puntos|get_item:request.user.id %}
+                                                            {% if puntos_usuario %}
+                                                            Ya apostaste
+                                                            {% else %}
+                                                            Pendiente
+                                                            {% endif %}
+                                                            {% endwith %}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted d-block mt-3 text-center">
+                                            🔐 La información detallada se mostrará cuando inicie la carrera
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if usuarios %}
+                <div class="card-footer bg-light border-0 py-3">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <small class="text-muted d-block">Total Carreras</small>
+                            <strong class="text-dark">{{ carreras_finalizadas|default:0 }}</strong>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted d-block">Participantes</small>
+                            <strong class="text-dark">{{ usuarios|length }}</strong>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted d-block">Líder</small>
+                            <strong class="text-dark">{{ usuarios.0.username }}</strong>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Componente de Gráfico de Progresión -->
+    {% include "grafico_progresion.html" %}
+
+</div>
+
+{% endblock %}

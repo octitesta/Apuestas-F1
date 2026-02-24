@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-dark mb-2">🏆 Mis Salas</h1>
+        <p class="lead text-muted">Selecciona una sala para comenzar a competir</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-auto">
+            <a href="{% url 'crear_sala' %}" class="btn btn-primary btn-lg">
+                ➕ Crear Nueva Sala
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'unirse_sala' %}" class="btn btn-success btn-lg">
+                🎯 Unirse a una Sala
+            </a>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    {% if todas_las_salas %}
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">📌 Mis Salas</h3>
+            <div class="row">
+                {% for sala in todas_las_salas %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0 hover-lift" style="cursor: pointer; transition: transform 0.2s;" 
+                         onclick="location.href='{% url 'home_sala' sala.code %}';">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">{{ sala.name }}</h5>
+                                {% if sala.created_by == request.user %}
+                                <span class="badge bg-primary">Creador</span>
+                                {% else %}
+                                <span class="badge bg-success">Miembro</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <strong>Creada por:</strong> {{ sala.created_by.username }}
+                                </small>
+                            </div>
+
+                            <div class="mb-3 p-2 bg-light rounded" style="border: 1px dashed #dee2e6;">
+                                <small class="text-muted d-block mb-1">
+                                    <strong>Código de sala:</strong>
+                                </small>
+                                <code class="text-primary fw-bold" style="font-size: 0.95rem; letter-spacing: 1px;">{{ sala.code }}</code>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-3">
+                                <small class="text-muted">
+                                    <strong>👥 Miembros:</strong> {{ sala.members.count }}
+                                </small>
+                                <small class="text-muted">
+                                    <strong>📅 Creada:</strong> {{ sala.created_at|date:"d/m/y" }}
+                                </small>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary btn-sm flex-grow-1" onclick="event.stopPropagation(); location.href='{% url 'home_sala' sala.code %}';">
+                                    🏁 Entrar
+                                </button>
+                                <form method="POST" action="{% url 'dejar_sala' sala.code %}" style="display:inline;" onclick="event.stopPropagation();">
+                                    {% csrf_token %}
+                                    {% if sala.created_by == request.user %}
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('⚠️ Eres el creador. ¿Eliminar la sala {{ sala.name }}? Esta acción no se puede deshacer.')">
+                                            👋 Salir y Eliminar
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Salir de la sala {{ sala.name }}?')">
+                                            👋 Salir
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- SIN SALAS -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center py-5">
+                    <h3 class="mb-3">😢 Aún no tienes salas</h3>
+                    <p class="text-muted mb-4">¡Crea una nueva sala o únete a una existente para comenzar a competir con tus amigos!</p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'crear_sala' %}" class="btn btn-primary btn-lg">
+                            ➕ Crear una Sala
+                        </a>
+                        <a href="{% url 'unirse_sala' %}" class="btn btn-success btn-lg">
+                            🎯 Unirse a una Sala
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

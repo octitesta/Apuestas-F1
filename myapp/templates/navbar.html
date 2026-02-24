@@ -1,0 +1,104 @@
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm"
+  style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
+  <div class="container">
+
+    {% load static %}
+    <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'img/logof1.png' %}" alt="F1 Logo" height="40" class="me-2">
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <ul class="navbar-nav me-auto ms-lg-4">
+
+        <li class="nav-item">
+          {% if room %}
+          <a class="nav-link px-3" href="{% url 'home_sala' room.code %}">
+            <span class="me-1">🏠</span> Inicio
+          </a>
+          {% else %}
+          <a class="nav-link px-3" href="{% url 'home' %}">
+            <span class="me-1">🏠</span> Inicio
+          </a>
+          {% endif %}
+        </li>
+
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link px-3" href="{% url 'ver_salas' %}">
+            <span class="me-1">🏛️</span> Salas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3" href="{% url 'simulador' %}">
+            <span class="me-1">🧮</span> Simulador
+          </a>
+        </li>
+        {% endif %}
+
+        {% if room %}
+        <li class="nav-item">
+          <a class="nav-link px-3" href="{% url 'clasificacion_sala' room.code %}">
+            <span class="me-1">🏆</span> Clasificación
+          </a>
+        </li>
+        {% endif %}
+
+        {% if user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link px-3" href="{% url 'admin_panel' %}">
+            <span class="me-1">⚙️</span> Admin
+          </a>
+        </li>
+        {% endif %}
+
+      </ul>
+
+      <ul class="navbar-nav ms-auto">
+
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
+            data-bs-toggle="dropdown">
+            <div
+              class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+              style="width: 32px; height: 32px;">
+              <span class="fw-bold">{{ user.username|slice:":1"|upper }}</span>
+            </div>
+            <span>{{ user.username }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li>
+              <form method="post" action="{% url 'logout' %}" class="px-2">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item text-danger">
+                  <span class="me-2">🚪</span> Cerrar sesión
+                </button>
+              </form>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item me-2 mb-2 mb-lg-0">
+          <a class="btn btn-sm px-3 w-100" href="{% url 'login' %}"
+            style="background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.55);">
+            Iniciar sesión
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-sm px-3 fw-semibold w-100" href="{% url 'register' %}"
+            style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6);">
+            Registrarse
+          </a>
+        </li>
+        {% endif %}
+
+      </ul>
+
+    </div>
+  </div>
+</nav>

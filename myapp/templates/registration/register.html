@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block navbar %}
+<nav class="navbar navbar-dark shadow-sm"
+  style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+    <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'img/logof1.png' %}" alt="F1 Logo" height="40" class="me-2">
+    </a>
+
+    <div class="d-flex align-items-center gap-2">
+      <span class="d-none d-sm-inline" style="font-size: 0.9rem; color: rgba(255,255,255,0.5);">¿Ya tienes una cuenta?</span>
+      <a class="btn btn-sm px-3 fw-semibold" href="{% url 'login' %}"
+        style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6);">
+        Iniciar Sesión
+      </a>
+    </div>
+
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+        <!-- Título superior -->
+        <div class="text-center mb-4">
+            <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3"
+                style="width: 80px; height: 80px; overflow: hidden;">
+                <img src="{% static 'img/logof1.png' %}" alt="F1 Logo" style="width: 50px;">
+            </div>
+            <h2 class="fw-bold text-dark">Únete al Campeonato</h2>
+            <p class="text-muted">Creá tu cuenta y empezá a competir</p>
+        </div>
+
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-white text-center py-3"
+                style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
+                <h5 class="mb-0 fw-bold">⭐ Crear Cuenta</h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="alert alert-info border-0 mb-4">
+                    <div class="d-flex align-items-center">
+                        <span class="fs-4 me-3">🏆</span>
+                        <small>
+                            <strong>¡Es gratis!</strong><br>
+                            Unite al campeonato y competí con tus amigos
+                        </small>
+                    </div>
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            {% if field.name == 'username' %}
+                            <span class="me-2">👤</span>
+                            {% elif field.name == 'password1' or field.name == 'password2' %}
+                            <span class="me-2">🔒</span>
+                            {% endif %}
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                        <div class="form-text small">
+                            💡 {{ field.help_text }}
+                        </div>
+                        {% endif %}
+
+                        {% if field.errors %}
+                        <div class="alert alert-danger border-0 mt-2 py-2">
+                            {% for error in field.errors %}
+                            <small>⚠️ {{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-lg shadow-sm text-white"
+                            style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%); border: none;">
+                            <span class="me-2">🚀</span> Registrarme Ahora
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="text-muted mb-2">¿Ya tenés cuenta?</p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary w-100">
+                        <span class="me-2">🔐</span> Iniciar sesión
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="card-footer bg-light border-0 py-3">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <small class="text-muted d-block">🎯</small>
+                        <small class="fw-semibold">Apuestas</small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted d-block">🏆</small>
+                        <small class="fw-semibold">Competencias</small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted d-block">📊</small>
+                        <small class="fw-semibold">Rankings</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="text-center mt-4">
+            <p class="text-muted small">
+                Al registrarte, aceptás nuestros términos y condiciones
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

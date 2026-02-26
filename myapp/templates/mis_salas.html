@@ -2,7 +2,9 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-5">🏆 Mis Salas</h1>
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold mb-2">🏆 Mis Salas</h1>
+    </div>
 
     {% if messages %}
         {% for message in messages %}
@@ -14,30 +16,30 @@
     {% endif %}
 
     <div class="row gap-4">
-        <!-- BOTONES DE ACCIÓN -->
+        <!-- ACTION BUTTONS -->
         <div class="col-12">
             <a href="{% url 'crear_sala' %}" class="btn btn-primary btn-lg">
-                ➕ Crear Nueva Sala
+                <i class="bi bi-plus-lg me-1"></i> Crear Nueva Sala
             </a>
             <a href="{% url 'unirse_sala' %}" class="btn btn-success btn-lg">
-                🎯 Unirse a una Sala
+                <i class="bi bi-box-arrow-in-right me-1"></i> Unirse a una Sala
             </a>
         </div>
 
-        <!-- SALAS CREADAS -->
+        <!-- CREATED ROOMS -->
         {% if salas_creadas %}
         <div class="col-12">
-            <h4 class="mb-3">📌 Salas que Creaste</h4>
+            <h4 class="mb-3"><i class="bi bi-pin-map me-2"></i>Salas que Creaste</h4>
             <div class="row">
                 {% for sala in salas_creadas %}
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 hover-lift">
                         <div class="card-body">
                             <h5 class="card-title">{{ sala.name }}</h5>
-                            <p class="text-muted small mb-2">
-                                <strong>Código:</strong> {{ sala.code }}
+                            <p class="small mb-2">
+                                <strong>Código:</strong> <code>{{ sala.code }}</code>
                             </p>
-                            <p class="text-muted small mb-3">
+                            <p class="small mb-3">
                                 <strong>Miembros:</strong> {{ sala.members.count }}
                             </p>
                             <a href="{% url 'home_sala' sala.code %}" class="btn btn-primary btn-sm">
@@ -51,20 +53,20 @@
         </div>
         {% endif %}
 
-        <!-- SALAS A LAS QUE PERTENECES -->
+        <!-- MEMBER ROOMS -->
         {% if salas_miembro %}
         <div class="col-12">
-            <h4 class="mb-3">🎯 Salas a las que Perteneces</h4>
+            <h4 class="mb-3"><i class="bi bi-people me-2"></i>Salas a las que Perteneces</h4>
             <div class="row">
                 {% for sala in salas_miembro %}
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 hover-lift">
                         <div class="card-body">
                             <h5 class="card-title">{{ sala.name }}</h5>
-                            <p class="text-muted small mb-2">
+                            <p class="small mb-2">
                                 <strong>Creada por:</strong> {{ sala.created_by.username }}
                             </p>
-                            <p class="text-muted small mb-3">
+                            <p class="small mb-3">
                                 <strong>Miembros:</strong> {{ sala.members.count }}
                             </p>
                             <a href="{% url 'home_sala' sala.code %}" class="btn btn-info btn-sm">
@@ -78,12 +80,15 @@
         </div>
         {% endif %}
 
-        <!-- SIN SALAS -->
+        <!-- NO ROOMS -->
         {% if not salas_creadas and not salas_miembro %}
         <div class="col-12">
-            <div class="alert alert-info text-center py-5">
-                <h5>😢 Aún no tienes salas</h5>
-                <p class="text-muted mb-3">¡Crea una o únete a una existente para competir!</p>
+            <div class="card text-center py-5">
+                <div class="card-body">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">😢</div>
+                    <h5>Aún no tienes salas</h5>
+                    <p class="mb-3">¡Crea una o únete a una existente para competir!</p>
+                </div>
             </div>
         </div>
         {% endif %}

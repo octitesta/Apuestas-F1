@@ -5,12 +5,12 @@
 
 <div class="container mt-4">
 
-    <!-- Título de la página -->
+    <!-- Page Title -->
     <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-dark mb-2">
+        <h1 class="display-5 fw-bold mb-2">
             🏆 Clasificación General
         </h1>
-        <p class="lead text-muted">Tabla de posiciones del campeonato</p>
+        <p class="lead">Tabla de posiciones del campeonato</p>
     </div>
 
     <div class="row justify-content-center g-3">
@@ -21,14 +21,14 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
                             <span class="fs-4 me-2">🏁</span>
-                            <h5 class="mb-0 fw-bold">Ranking de Pilotos</h5>
+                            <h5 class="mb-0 fw-bold" style="color: #fff;">Ranking de Pilotos</h5>
                         </div>
-                        <span class="badge bg-white text-dark">{{ usuarios|length }} participantes</span>
+                        <span class="badge" style="background: rgba(255,255,255,0.15);">{{ usuarios|length }} participantes</span>
                     </div>
                 </div>
 
                 <div class="card-body p-0">
-                    <!-- Tabs de navegación -->
+                    <!-- Navigation Tabs -->
                     <div class="overflow-auto border-bottom">
                         <ul class="nav nav-tabs border-0 flex-nowrap" id="clasificacionTabs" role="tablist"
                             style="min-width: max-content;">
@@ -59,13 +59,13 @@
                         </ul>
                     </div>
 
-                    <!-- Contenido de los tabs -->
+                    <!-- Tab Content -->
                     <div class="tab-content" id="clasificacionTabsContent">
-                        <!-- TAB GENERAL -->
+                        <!-- GENERAL TAB -->
                         <div class="tab-pane fade show active" id="general" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
+                                    <thead>
                                         <tr>
                                             <th style="width: 80px;" class="text-center">Pos.</th>
                                             <th>Usuario</th>
@@ -74,7 +74,7 @@
                                     </thead>
                                     <tbody>
                                         {% for usuario in usuarios %}
-                                        <tr {% if forloop.counter == 1 %}class="table-warning"{% elif forloop.counter == 2 %}class="table-light border-start border-3 border-secondary"{% elif forloop.counter == 3 %}class="bg-warning bg-opacity-25 border-start border-3 border-danger"{% endif %} {% if usuario == request.user %}style="background-color: rgba(13, 110, 253, 0.1) !important;"{% endif %}>
+                                        <tr {% if forloop.counter == 1 %}class="table-warning"{% elif forloop.counter == 2 %}class="table-light border-start border-3 border-secondary"{% elif forloop.counter == 3 %}class="bg-warning bg-opacity-25 border-start border-3 border-danger"{% endif %} {% if usuario == request.user %}style="background-color: rgba(56, 189, 248, 0.1) !important;"{% endif %}>
                                             <td class="text-center fw-bold">
                                                 {% if forloop.counter == 1 %}
                                                 <span class="fs-3">🥇</span>
@@ -89,9 +89,9 @@
 
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-3"
-                                                        style="width: 40px; height: 40px;">
-                                                        <span class="fw-bold text-primary">{{ usuario.username|slice:":1"|upper }}</span>
+                                                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                                                        style="width: 40px; height: 40px; background: rgba(42, 82, 152, 0.15);">
+                                                        <span class="fw-bold" style="color: var(--text-accent);">{{ usuario.username|slice:":1"|upper }}</span>
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold">
@@ -100,7 +100,7 @@
                                                             <span class="badge bg-primary ms-2">Tú</span>
                                                             {% endif %}
                                                         </div>
-                                                        {% if forloop.counter <= 3 %} <small class="text-muted">
+                                                        {% if forloop.counter <= 3 %} <small>
                                                             {% if forloop.counter == 1 %}
                                                             🏆 Campeón actual
                                                             {% elif forloop.counter == 2 %}
@@ -124,10 +124,10 @@
                                         {% empty %}
                                         <tr>
                                             <td colspan="3" class="text-center py-5">
-                                                <div class="text-muted mb-3">
+                                                <div class="mb-3">
                                                     <span style="font-size: 3rem;">📊</span>
                                                 </div>
-                                                <p class="text-muted mb-0">
+                                                <p class="mb-0">
                                                     No hay usuarios clasificados aún.<br>
                                                     <small>¡Sé el primero en apostar!</small>
                                                 </p>
@@ -139,14 +139,14 @@
                             </div>
                         </div>
 
-                        <!-- TABS POR CARRERA -->
+                        <!-- RACE TABS -->
                         {% for dato in datos_por_carrera %}
                         <div class="tab-pane fade" id="carrera-{{ forloop.counter }}" role="tabpanel">
-                            <div class="p-3 bg-light border-bottom">
+                            <div class="p-3 border-bottom" style="background: var(--surface-2);">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h5 class="mb-1 fw-bold">{{ dato.carrera.name }}</h5>
-                                        <small class="text-muted">📅 {{ dato.carrera.date|date:"d/m/Y H:i" }}</small>
+                                        <small>📅 {{ dato.carrera.date|date:"d/m/Y H:i" }}</small>
                                     </div>
                                     <div>
                                         {% if dato.carrera.estado == "finalizada" %}
@@ -162,11 +162,11 @@
                                 </div>
                             </div>
 
-                            <!-- MOSTRAR DETALLE SOLO SI LA CARRERA ESTÁ EN CURSO O FINALIZADA -->
+                            <!-- Show detail only if race is live or finished -->
                             {% if dato.carrera.estado == "finalizada" or dato.carrera.estado == "en_curso" %}
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
+                                    <thead>
                                         <tr>
                                             <th style="width: 60px;" class="text-center">Pos.</th>
                                             <th style="width: 180px;">Usuario</th>
@@ -180,15 +180,15 @@
                                     <tbody>
                                         {% for usuario in dato.usuarios_ordenados %}
                                         {% with puntos_usuario=dato.puntos|get_item:usuario.id %}
-                                        <tr {% if usuario == request.user %}style="background-color: rgba(13, 110, 253, 0.1);"{% endif %}>
+                                        <tr {% if usuario == request.user %}style="background-color: rgba(56, 189, 248, 0.1);"{% endif %}>
                                             <td class="text-center">
-                                                <span class="badge bg-light text-dark border">{{ forloop.counter }}</span>
+                                                <span class="badge" style="background: var(--surface-2);">{{ forloop.counter }}</span>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-                                                        style="width: 32px; height: 32px;">
-                                                        <span class="fw-bold text-primary small">{{ usuario.username|slice:":1"|upper }}</span>
+                                                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                                                        style="width: 32px; height: 32px; background: rgba(42, 82, 152, 0.15);">
+                                                        <span class="fw-bold small" style="color: var(--text-accent);">{{ usuario.username|slice:":1"|upper }}</span>
                                                     </div>
                                                     <span class="fw-semibold small">
                                                         {{ usuario.username }}
@@ -201,31 +201,31 @@
                                             </td>
                                             <td>
                                                 {% if puntos_usuario %}
-                                                <span class="text-dark small">🏎️ {{ puntos_usuario.piloto }}</span>
+                                                <span class="small">🏎️ {{ puntos_usuario.piloto }}</span>
                                                 {% else %}
-                                                <span class="text-muted fst-italic small">No apostó</span>
+                                                <span class="fst-italic small">No apostó</span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 {% if puntos_usuario and puntos_usuario.pos_qualy %}
-                                                <span class="badge bg-info text-dark">P{{ puntos_usuario.pos_qualy }}</span>
+                                                <span class="badge bg-info">P{{ puntos_usuario.pos_qualy }}</span>
                                                 {% else %}
-                                                <span class="text-muted">-</span>
+                                                <span>-</span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 {% if puntos_usuario and puntos_usuario.pos_carrera %}
                                                 <span class="badge bg-dark">P{{ puntos_usuario.pos_carrera }}</span>
                                                 {% else %}
-                                                <span class="text-muted">-</span>
+                                                <span>-</span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 {% if puntos_usuario and puntos_usuario.multiplicador %}
-                                                <span class="badge bg-purple text-white"
+                                                <span class="badge text-white"
                                                     style="background-color: #7c3aed;">×{{ puntos_usuario.multiplicador }}</span>
                                                 {% else %}
-                                                <span class="text-muted">-</span>
+                                                <span>-</span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-end">
@@ -237,7 +237,7 @@
                                                 </span>
                                                 {% endwith %}
                                                 {% else %}
-                                                <span class="badge bg-light text-muted border fs-6 px-3 py-2">-
+                                                <span class="badge bg-light border fs-6 px-3 py-2">-
                                                     pts</span>
                                                 {% endif %}
                                             </td>
@@ -248,41 +248,41 @@
                                 </table>
                             </div>
                             {% else %}
-                            <!-- MOSTRAR SOLO ESTADÍSTICAS (SIN NOMBRES NI PILOTOS) -->
+                            <!-- Stats only (hidden names & pilots) -->
                             <div class="p-5">
                                 <div class="text-center mb-4">
-                                    <div class="text-muted mb-3">
+                                    <div class="mb-3">
                                         <span style="font-size: 3rem;">🔒</span>
                                     </div>
-                                    <h5 class="text-dark mb-2">Apuestas Cerradas</h5>
-                                    <p class="text-muted mb-4">
+                                    <h5>Apuestas Cerradas</h5>
+                                    <p class="mb-4">
                                         Las apuestas se revelarán cuando la carrera comience
                                     </p>
                                 </div>
 
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
-                                        <div class="card bg-light border-0 shadow-sm">
+                                        <div class="card border-0 shadow-sm">
                                             <div class="card-body text-center py-4">
                                                 <div class="row">
                                                     <div class="col-6 border-end">
                                                         <div class="mb-2">
-                                                            <span class="display-4 fw-bold text-primary">{{ dato.puntos|length }}</span>
+                                                            <span class="display-4 fw-bold" style="color: var(--text-accent);">{{ dato.puntos|length }}</span>
                                                         </div>
-                                                        <small class="text-muted text-uppercase">Apuestas
+                                                        <small class="text-uppercase">Apuestas
                                                             realizadas</small>
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="mb-2">
                                                             {% with puntos_usuario=dato.puntos|get_item:request.user.id %}
                                                             {% if puntos_usuario %}
-                                                            <span class="display-4 text-success">✅</span>
+                                                            <span class="display-4" style="color: var(--accent-emerald);">✅</span>
                                                             {% else %}
-                                                            <span class="display-4 text-warning">⏳</span>
+                                                            <span class="display-4" style="color: var(--accent-amber);">⏳</span>
                                                             {% endif %}
                                                             {% endwith %}
                                                         </div>
-                                                        <small class="text-muted text-uppercase">
+                                                        <small class="text-uppercase">
                                                             {% with puntos_usuario=dato.puntos|get_item:request.user.id %}
                                                             {% if puntos_usuario %}
                                                             Ya apostaste
@@ -295,7 +295,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <small class="text-muted d-block mt-3 text-center">
+                                        <small class="d-block mt-3 text-center">
                                             🔐 La información detallada se mostrará cuando inicie la carrera
                                         </small>
                                     </div>
@@ -308,19 +308,19 @@
                 </div>
 
                 {% if usuarios %}
-                <div class="card-footer bg-light border-0 py-3">
+                <div class="card-footer py-3">
                     <div class="row text-center">
                         <div class="col-4">
-                            <small class="text-muted d-block">Total Carreras</small>
-                            <strong class="text-dark">{{ carreras_finalizadas|default:0 }}</strong>
+                            <small class="d-block">Total Carreras</small>
+                            <strong>{{ carreras_finalizadas|default:0 }}</strong>
                         </div>
                         <div class="col-4">
-                            <small class="text-muted d-block">Participantes</small>
-                            <strong class="text-dark">{{ usuarios|length }}</strong>
+                            <small class="d-block">Participantes</small>
+                            <strong>{{ usuarios|length }}</strong>
                         </div>
                         <div class="col-4">
-                            <small class="text-muted d-block">Líder</small>
-                            <strong class="text-dark">{{ usuarios.0.username }}</strong>
+                            <small class="d-block">Líder</small>
+                            <strong>{{ usuarios.0.username }}</strong>
                         </div>
                     </div>
                 </div>
@@ -329,7 +329,7 @@
         </div>
     </div>
 
-    <!-- Componente de Gráfico de Progresión -->
+    <!-- Progression Chart Component -->
     {% include "grafico_progresion.html" %}
 
 </div>

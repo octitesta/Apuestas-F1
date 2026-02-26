@@ -5,8 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-success text-white py-4">
-                    <h4 class="mb-0">🎯 Unirse a una Sala</h4>
+                <div class="card-header text-white py-4" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <h4 class="mb-0" style="color: #fff;"><i class="bi bi-box-arrow-in-right me-2"></i>Unirse a una Sala</h4>
                 </div>
                 <div class="card-body p-4">
                     {% if messages %}
@@ -30,23 +30,24 @@
                                 name="code" 
                                 placeholder="Ej: A1B2C3D4"
                                 required
-                                maxlength="8">
-                            <small class="text-muted">Pide el código a quien creó la sala</small>
+                                maxlength="8"
+                                style="font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                            <small class="form-text">Pide el código a quien creó la sala</small>
                         </div>
 
                         <button type="submit" class="btn btn-success btn-lg w-100">
-                            ✅ Unirse
+                            <i class="bi bi-check-lg me-1"></i> Unirse
                         </button>
                     </form>
 
                     {% if mis_salas %}
                     <div class="mt-4 pt-3 border-top">
-                        <h6 class="fw-bold mb-3">📍 Tus Salas</h6>
+                        <h6 class="fw-bold mb-3"><i class="bi bi-pin-map me-1"></i> Tus Salas</h6>
                         {% for sala in mis_salas %}
                         <div class="list-group">
                             <a href="{% url 'home_sala' sala.code %}" class="list-group-item list-group-item-action">
                                 {{ sala.name }}
-                                <small class="text-muted d-block">{{ sala.members.count }} miembros</small>
+                                <small class="d-block">{{ sala.members.count }} miembros</small>
                             </a>
                         </div>
                         {% endfor %}

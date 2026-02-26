@@ -4,27 +4,27 @@
 <div class="container-fluid px-4">
     <!-- Hero Section -->
     <div class="text-center mb-5 mt-4">
-        <h1 class="display-4 fw-bold text-dark mb-2">
+        <h1 class="display-4 fw-bold mb-2">
             🏎️ Sistema de Apuestas F1
         </h1>
-        <p class="lead text-muted">Predecí quién dará la sorpresa en la carrera</p>
+        <p class="lead">Predecí quién dará la sorpresa en la carrera</p>
     </div>
 
     <!-- Componente violeta con info de la sala -->
     {% if room %}
     <div class="mb-5">
-        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
             <div class="card-body text-white py-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <h2 class="fw-bold mb-2">🏆 {{ room.name }}</h2>
-                        <p class="mb-1">Código: <code
-                                class="bg-white bg-opacity-20 px-3 py-1 rounded">{{ room.code }}</code></p>
-                        <small>Creada por: <strong>{{ room.created_by.username }}</strong></small>
+                        <h2 class="fw-bold mb-2" style="color: #fff;">🏆 {{ room.name }}</h2>
+                        <p class="mb-1" style="color: rgba(255,255,255,0.85);">Código: <code
+                                class="px-3 py-1 rounded" style="background: rgba(255,255,255,0.15); color: #fff;">{{ room.code }}</code></p>
+                        <small style="color: rgba(255,255,255,0.7);">Creada por: <strong>{{ room.created_by.username }}</strong></small>
                     </div>
                     <div class="text-end">
-                        <div class="display-6 mb-2">{{ room.members.count }}</div>
-                        <small>Participantes</small>
+                        <div class="display-6 mb-2" style="color: #fff;">{{ room.members.count }}</div>
+                        <small style="color: rgba(255,255,255,0.7);">Participantes</small>
                     </div>
                 </div>
             </div>
@@ -35,39 +35,39 @@
     <!-- Countdown Timer -->
     {% if carrera_countdown %}
     <div class="mb-5">
-        <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="card border-0 overflow-hidden">
             <div class="card-body py-4" style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
                 <div class="text-center text-white">
                     <div class="mb-2">
-                        <span class="badge bg-warning text-dark px-3 py-2 fw-semibold">⏱️ PRÓXIMA CARRERA</span>
+                        <span class="badge px-3 py-2 fw-semibold" style="background: linear-gradient(135deg, #f59e0b, #d97706);">⏱️ PRÓXIMA CARRERA</span>
                     </div>
-                    <h4 class="fw-bold mb-1">🏁 {{ carrera_countdown.name }}</h4>
-                    <small class="opacity-75">📅 {{ carrera_countdown.date|date:"d/m/Y H:i" }}</small>
+                    <h4 class="fw-bold mb-1" style="color: #fff;">🏁 {{ carrera_countdown.name }}</h4>
+                    <small style="color: rgba(255,255,255,0.5);">📅 {{ carrera_countdown.date|date:"d/m/Y H:i" }}</small>
 
-                    <div class="d-flex justify-content-center gap-3 mt-4" id="countdown">
+                    <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap" id="countdown">
                         <div class="text-center">
-                            <div class="bg-white bg-opacity-10 rounded-3 px-3 py-2" style="min-width: 72px; backdrop-filter: blur(10px);">
-                                <div class="display-6 fw-bold" id="cd-days" style="font-variant-numeric: tabular-nums;">--</div>
+                            <div class="countdown-box rounded-3 px-2 py-2" style="min-width: 60px; background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="fw-bold" id="cd-days" style="font-size: 1.8rem; font-variant-numeric: tabular-nums; color: #f1f5f9;">--</div>
                             </div>
-                            <small class="text-white-50 mt-1 d-block" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Días</small>
+                            <small class="mt-1 d-block" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">Días</small>
                         </div>
                         <div class="text-center">
-                            <div class="bg-white bg-opacity-10 rounded-3 px-3 py-2" style="min-width: 72px; backdrop-filter: blur(10px);">
-                                <div class="display-6 fw-bold" id="cd-hours" style="font-variant-numeric: tabular-nums;">--</div>
+                            <div class="countdown-box rounded-3 px-2 py-2" style="min-width: 60px; background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="fw-bold" id="cd-hours" style="font-size: 1.8rem; font-variant-numeric: tabular-nums; color: #f1f5f9;">--</div>
                             </div>
-                            <small class="text-white-50 mt-1 d-block" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Horas</small>
+                            <small class="mt-1 d-block" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">Horas</small>
                         </div>
                         <div class="text-center">
-                            <div class="bg-white bg-opacity-10 rounded-3 px-3 py-2" style="min-width: 72px; backdrop-filter: blur(10px);">
-                                <div class="display-6 fw-bold" id="cd-mins" style="font-variant-numeric: tabular-nums;">--</div>
+                            <div class="countdown-box rounded-3 px-2 py-2" style="min-width: 60px; background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="fw-bold" id="cd-mins" style="font-size: 1.8rem; font-variant-numeric: tabular-nums; color: #f1f5f9;">--</div>
                             </div>
-                            <small class="text-white-50 mt-1 d-block" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Min</small>
+                            <small class="mt-1 d-block" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">Min</small>
                         </div>
                         <div class="text-center">
-                            <div class="bg-white bg-opacity-10 rounded-3 px-3 py-2" style="min-width: 72px; backdrop-filter: blur(10px);">
-                                <div class="display-6 fw-bold" id="cd-secs" style="font-variant-numeric: tabular-nums; color: #f59e0b;">--</div>
+                            <div class="countdown-box rounded-3 px-2 py-2" style="min-width: 60px; background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="fw-bold" id="cd-secs" style="font-size: 1.8rem; font-variant-numeric: tabular-nums; color: #f59e0b;">--</div>
                             </div>
-                            <small class="text-white-50 mt-1 d-block" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Seg</small>
+                            <small class="mt-1 d-block" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">Seg</small>
                         </div>
                     </div>
 
@@ -120,45 +120,45 @@
 
     {% if carrera_en_curso or carrera_activa %}
     <div class="card border-0 shadow-lg mb-4">
-        <!-- Header violeta -->
+        <!-- Header -->
         {% if carrera_en_curso %}
         <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
             <div class="d-flex align-items-center">
                 <span class="fs-4 me-2">🏎️</span>
                 <div>
-                    <h5 class="mb-0 fw-bold">Carrera en Curso</h5>
-                    <small class="opacity-75">{{ carrera_en_curso.name }}</small>
+                    <h5 class="mb-0 fw-bold" style="color: #fff;">Carrera en Curso</h5>
+                    <small style="color: rgba(255,255,255,0.75);">{{ carrera_en_curso.name }}</small>
                 </div>
             </div>
         </div>
         {% else %}
-        <div class="card-header bg-gradient text-white py-3"
+        <div class="card-header text-white py-3"
             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
             <div class="d-flex align-items-center">
                 <span class="fs-4 me-2">🏁</span>
                 <div>
-                    <h5 class="mb-0 fw-bold">Apuestas Abiertas</h5>
-                    <small class="opacity-75">¡Hacé tu predicción!</small>
+                    <h5 class="mb-0 fw-bold" style="color: #fff;">Apuestas Abiertas</h5>
+                    <small style="color: rgba(255,255,255,0.75);">¡Hacé tu predicción!</small>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        <!-- Contenido principal -->
+        <!-- Main content -->
         <div class="card-body p-4">
-            <!-- Información de la carrera -->
+            <!-- Race info -->
             <div class="mb-5 pb-4 border-bottom">
                 <div class="text-center mb-4">
-                    <h4 class="card-title fw-bold text-dark mb-2">
+                    <h4 class="card-title fw-bold mb-2">
                         {% if carrera_en_curso %}
                         {{ carrera_en_curso.name }}
                         {% else %}
                         {{ carrera_activa.name }}
                         {% endif %}
                     </h4>
-                    <div class="d-inline-block px-3 py-2 bg-light rounded-pill">
+                    <div class="d-inline-block px-3 py-2 rounded-pill" style="background: var(--surface-2);">
                         <i class="bi bi-calendar-event"></i>
-                        <span class="text-muted">
+                        <span>
                             📅
                             {% if carrera_en_curso %}
                             {{ carrera_en_curso.date|date:"d/m/Y H:i" }}
@@ -169,7 +169,7 @@
                     </div>
                 </div>
 
-                <!-- Estado de la carrera -->
+                <!-- Race status -->
                 <div class="row g-3 mt-3">
                     {% if carrera_en_curso %}
                     <div class="col-md-6">
@@ -178,7 +178,7 @@
                                 <span class="fs-4 me-2">🔴</span>
                                 <div>
                                     <h6 class="mb-0">En Curso</h6>
-                                    <small class="text-muted">La carrera está en vivo</small>
+                                    <small>La carrera está en vivo</small>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                                 <span class="fs-4 me-2">⏳</span>
                                 <div>
                                     <h6 class="mb-0">Apuestas Abiertas</h6>
-                                    <small class="text-muted">Todavía podés apostar</small>
+                                    <small>Todavía podés apostar</small>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +202,7 @@
                                 <span class="fs-4 me-2">📊</span>
                                 <div>
                                     <h6 class="mb-0">Apuestas</h6>
-                                    <small class="text-muted">{{ apuestas|length|default:0 }} participantes</small>
+                                    <small>{{ apuestas|length|default:0 }} participantes</small>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                 </div>
             </div>
 
-            <!-- Tu apuesta (solo si hay carrera activa) -->
+            <!-- User bet (only if active race) -->
             {% if carrera_activa and user.is_authenticated %}
             <div class="mb-5 pb-4 border-bottom text-center">
                 {% if apuesta_usuario %}
@@ -228,7 +228,7 @@
                 </a>
                 {% else %}
                 <div class="mb-3">
-                    <p class="text-muted">Elegí el piloto que creés que subirá más posiciones</p>
+                    <p>Elegí el piloto que creés que subirá más posiciones</p>
                 </div>
                 <a href="{% url 'apostar' %}" class="btn btn-success btn-lg shadow-sm px-5 py-3">
                     <span class="me-2">🎯</span> Realizar Apuesta
@@ -237,25 +237,25 @@
             </div>
             {% endif %}
 
-            <!-- Apuestas realizadas (en carrera en curso) -->
+            <!-- Bets placed (during live race) -->
             {% if carrera_en_curso and apuestas %}
             <div class="mb-5 pb-4 border-bottom">
-                <h6 class="text-muted mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                <h6 class="mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                     Apuestas Realizadas
                 </h6>
                 <div class="list-group list-group-flush">
                     {% for apuesta in apuestas %}
                     <div class="list-group-item border-0 px-0 py-2">
                         <div class="d-flex align-items-center">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3"
-                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                <span class="fw-bold text-primary">{{ apuesta.usuario.username|slice:":1"|upper }}</span>
+                            <div class="rounded-circle p-2 me-3"
+                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(42, 82, 152, 0.15);">
+                                <span class="fw-bold" style="color: var(--text-accent);">{{ apuesta.usuario.username|slice:":1"|upper }}</span>
                             </div>
                             <div class="flex-grow-1">
                                 <div class="fw-semibold">{{ apuesta.usuario.username }}</div>
-                                <small class="text-muted">apostó por <strong class="text-dark">{{ apuesta.piloto.name }}</strong></small>
+                                <small>apostó por <strong>{{ apuesta.piloto.name }}</strong></small>
                             </div>
-                            <span class="badge bg-light text-dark border">🎯</span>
+                            <span class="badge" style="background: var(--surface-2);">🎯</span>
                         </div>
                     </div>
                     {% endfor %}
@@ -263,15 +263,15 @@
             </div>
             {% endif %}
 
-            <!-- Tabla de clasificación Qualy -->
+            <!-- Qualy classification table -->
             {% if resultados_qualy %}
             <div>
-                <h6 class="text-muted mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                <h6 class="mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                     Clasificación Qualifying - Posiciones de Salida
                 </h6>
                 <div class="table-responsive">
                     <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th class="text-center" style="width: 80px;">Pos.</th>
                                 <th>Piloto</th>
@@ -283,13 +283,13 @@
                                 class="{% if resultado.posicion == 1 %}table-warning{% elif resultado.posicion == 2 %}table-light{% elif resultado.posicion == 3 %}bg-warning bg-opacity-25{% endif %}">
                                 <td class="text-center fw-bold">
                                     {% if resultado.posicion == 1 %}
-                                    <span class="badge bg-warning text-dark fs-6">🥇 {{ resultado.posicion }}</span>
+                                    <span class="badge fs-6" style="background: var(--gradient-warning);">🥇 {{ resultado.posicion }}</span>
                                     {% elif resultado.posicion == 2 %}
                                     <span class="badge bg-secondary fs-6">🥈 {{ resultado.posicion }}</span>
                                     {% elif resultado.posicion == 3 %}
                                     <span class="badge bg-danger fs-6">🥉 {{ resultado.posicion }}</span>
                                     {% else %}
-                                    <span class="badge bg-light text-dark border">{{ resultado.posicion }}</span>
+                                    <span class="badge" style="background: var(--surface-2);">{{ resultado.posicion }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="{% if resultado.posicion <= 3 %}fw-bold{% endif %}">
@@ -307,7 +307,7 @@
                     <span class="fs-4 me-2">ℹ️</span>
                     <div>
                         <h6 class="mb-0">Clasificación no disponible</h6>
-                        <small class="text-muted">Los resultados del qualifying aún no están cargados</small>
+                        <small>Los resultados del qualifying aún no están cargados</small>
                     </div>
                 </div>
             </div>

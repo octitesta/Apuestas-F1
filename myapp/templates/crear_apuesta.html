@@ -4,34 +4,34 @@
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
 
-        <!-- Título de la sección -->
+        <!-- Section title -->
         <div class="text-center mb-4">
-            <h2 class="fw-bold text-dark">🎯 Realizar Apuesta</h2>
-            <p class="text-muted">Elegí el piloto que más posiciones ganará</p>
+            <h2 class="fw-bold">🎯 Realizar Apuesta</h2>
+            <p>Elegí el piloto que más posiciones ganará</p>
         </div>
 
         {% if not carrera %}
-            <!-- Alerta: Apuestas no habilitadas -->
-            <div class="alert alert-warning border-0 shadow-sm" style="background-color: #fff3cd;">
+            <!-- Alert: Bets not enabled -->
+            <div class="alert alert-warning border-0 shadow-sm">
                 <div class="d-flex align-items-center">
                     <span class="fs-3 me-3">🚫</span>
                     <div>
-                        <h5 class="mb-1 fw-bold text-dark">Las apuestas no están habilitadas</h5>
-                        <p class="mb-2 text-muted">En este momento no hay carreras activas disponibles para apostar.</p>
-                        <small class="text-muted">Las apuestas se habilitarán cuando comience la carga de una nueva carrera.</small>
+                        <h5 class="mb-1 fw-bold">Las apuestas no están habilitadas</h5>
+                        <p class="mb-2">En este momento no hay carreras activas disponibles para apostar.</p>
+                        <small>Las apuestas se habilitarán cuando comience la carga de una nueva carrera.</small>
                     </div>
                 </div>
             </div>
 
-            <!-- Botones para volver -->
+            <!-- Back buttons -->
             <div class="d-grid gap-2 mt-4">
                 {% if room_code %}
                     <a href="{% url 'home_sala' room_code %}" class="btn btn-primary">
-                        <span class="me-2">↩️</span> Volver a la Sala
+                        <i class="bi bi-arrow-left me-1"></i> Volver a la Sala
                     </a>
                 {% else %}
                     <a href="{% url 'home' %}" class="btn btn-primary">
-                        <span class="me-2">↩️</span> Volver al Dashboard
+                        <i class="bi bi-arrow-left me-1"></i> Volver al Dashboard
                     </a>
                 {% endif %}
             </div>
@@ -42,14 +42,14 @@
                     <div class="d-flex align-items-center">
                         <span class="fs-4 me-2">🏁</span>
                         <div>
-                            <h5 class="mb-0 fw-bold">{{ carrera.name }}</h5>
-                            <small class="opacity-75">{{ carrera.date|date:"d/m/Y H:i" }}</small>
+                            <h5 class="mb-0 fw-bold" style="color: #fff;">{{ carrera.name }}</h5>
+                            <small style="color: rgba(255,255,255,0.75);">{{ carrera.date|date:"d/m/Y H:i" }}</small>
                         </div>
                     </div>
                     {% if apuesta_existente %}
-                        <span class="badge bg-warning text-dark">Modificando</span>
+                        <span class="badge" style="background: var(--gradient-warning);">Modificando</span>
                     {% else %}
-                        <span class="badge bg-light text-dark">Nueva</span>
+                        <span class="badge" style="background: var(--surface-2);">Nueva</span>
                     {% endif %}
                 </div>
             </div>
@@ -73,8 +73,8 @@
 
                     {% for field in form %}
                         <div class="mb-4">
-                            <label class="form-label fw-semibold text-dark mb-2">
-                                <span class="me-2">🏎️</span>{{ field.label }}:
+                            <label class="form-label fw-semibold mb-2">
+                                <i class="bi bi-car-front me-1"></i> {{ field.label }}:
                             </label>
                             {{ field }}
 
@@ -93,23 +93,23 @@
                     <div class="d-grid gap-2 mt-4">
                         {% if apuesta_existente %}
                             <button type="submit" class="btn btn-warning btn-lg shadow-sm">
-                                <span class="me-2">🔄</span> Actualizar Apuesta
+                                <i class="bi bi-arrow-repeat me-1"></i> Actualizar Apuesta
                             </button>
                         {% else %}
                             <button type="submit" class="btn btn-success btn-lg shadow-sm">
-                                <span class="me-2">✅</span> Confirmar Apuesta
+                                <i class="bi bi-check-lg me-1"></i> Confirmar Apuesta
                             </button>
                         {% endif %}
                         
                         <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-                            <span class="me-2">↩️</span> Volver
+                            <i class="bi bi-arrow-left me-1"></i> Volver
                         </a>
                     </div>
                 </form>
             </div>
 
-            <div class="card-footer bg-light border-0 py-3">
-                <small class="text-muted">
+            <div class="card-footer py-3">
+                <small>
                     <strong>⚠️ Importante:</strong> Una vez cerradas las apuestas, no podrás modificar tu selección.
                 </small>
             </div>

@@ -1,12 +1,12 @@
-<!-- Gráfico de Progresión -->
+<!-- Progression Chart -->
 <div class="card shadow-lg border-0 mt-5">
     <div class="card-header text-white py-3"
         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <div class="d-flex align-items-center">
             <span class="fs-4 me-2">📈</span>
             <div>
-                <h5 class="mb-0 fw-bold">Gráfico de Progresión</h5>
-                <small class="opacity-75">Evolución acumulada de puntos por usuario</small>
+                <h5 class="mb-0 fw-bold" style="color: #fff;">Gráfico de Progresión</h5>
+                <small style="color: rgba(255,255,255,0.75);">Evolución acumulada de puntos por usuario</small>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
             <canvas id="progressionChart"></canvas>
         </div>
         {% else %}
-        <div class="text-center text-muted py-5">
+        <div class="text-center py-5">
             <p>No hay datos de progresión disponibles aún. Completa algunas carreras para ver el gráfico.</p>
         </div>
         {% endif %}
@@ -27,37 +27,37 @@
 {% if datos_json %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    // Parsear datos JSON desde Django
+    // Parse JSON data from Django
     const data = {{ datos_json|safe }};
     
-    // Generar colores para cada serie
+    // Colors for each series
     const colors = [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(75, 192, 75, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
-        'rgba(199, 199, 199, 1)',
-        'rgba(83, 102, 255, 1)',
-        'rgba(255, 99, 255, 1)',
-        'rgba(99, 255, 132, 1)',
+        'rgba(56, 189, 248, 1)',
+        'rgba(124, 58, 237, 1)',
+        'rgba(16, 185, 129, 1)',
+        'rgba(245, 158, 11, 1)',
+        'rgba(236, 72, 153, 1)',
+        'rgba(6, 182, 212, 1)',
+        'rgba(148, 163, 184, 1)',
+        'rgba(99, 102, 241, 1)',
+        'rgba(244, 114, 182, 1)',
+        'rgba(34, 197, 94, 1)',
     ];
     
     const bgColors = [
-        'rgba(255, 99, 132, 0.1)',
-        'rgba(54, 162, 235, 0.1)',
-        'rgba(75, 192, 75, 0.1)',
-        'rgba(255, 206, 86, 0.1)',
-        'rgba(153, 102, 255, 0.1)',
-        'rgba(255, 159, 64, 0.1)',
-        'rgba(199, 199, 199, 0.1)',
-        'rgba(83, 102, 255, 0.1)',
-        'rgba(255, 99, 255, 0.1)',
-        'rgba(99, 255, 132, 0.1)',
+        'rgba(56, 189, 248, 0.1)',
+        'rgba(124, 58, 237, 0.1)',
+        'rgba(16, 185, 129, 0.1)',
+        'rgba(245, 158, 11, 0.1)',
+        'rgba(236, 72, 153, 0.1)',
+        'rgba(6, 182, 212, 0.1)',
+        'rgba(148, 163, 184, 0.1)',
+        'rgba(99, 102, 241, 0.1)',
+        'rgba(244, 114, 182, 0.1)',
+        'rgba(34, 197, 94, 0.1)',
     ];
     
-    // Construir datasets para el gráfico
+    // Build datasets
     const datasets = data.series.map((serie, index) => ({
         label: serie.usuario,
         data: serie.puntos,
@@ -68,7 +68,7 @@
         fill: false,
         pointRadius: 5,
         pointBackgroundColor: colors[index % colors.length],
-        pointBorderColor: '#fff',
+        pointBorderColor: 'rgba(15, 23, 42, 1)',
         pointBorderWidth: 2,
         pointHoverRadius: 7,
         segment: {
@@ -97,22 +97,28 @@
                     labels: {
                         usePointStyle: true,
                         padding: 20,
+                        color: '#475569',
                         font: {
                             size: 12,
-                            weight: 'bold'
+                            weight: 'bold',
+                            family: "'Inter', sans-serif"
                         }
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
                     padding: 12,
+                    titleColor: '#1e293b',
+                    bodyColor: '#475569',
                     titleFont: {
-                        size: 14
+                        size: 14,
+                        family: "'Inter', sans-serif"
                     },
                     bodyFont: {
-                        size: 13
+                        size: 13,
+                        family: "'Inter', sans-serif"
                     },
-                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                    borderColor: 'rgba(0, 0, 0, 0.1)',
                     borderWidth: 1,
                     displayColors: true,
                     callbacks: {
@@ -126,12 +132,14 @@
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.05)',
+                        color: 'rgba(0, 0, 0, 0.06)',
                         drawBorder: false
                     },
                     ticks: {
+                        color: '#64748b',
                         font: {
-                            size: 11
+                            size: 11,
+                            family: "'Inter', sans-serif"
                         },
                         callback: function(value) {
                             return value.toFixed(0);
@@ -147,8 +155,10 @@
                         drawBorder: false
                     },
                     ticks: {
+                        color: '#64748b',
                         font: {
-                            size: 11
+                            size: 11,
+                            family: "'Inter', sans-serif"
                         }
                     }
                 }

@@ -1,10 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm"
-  style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%) !important;">
   <div class="container">
 
     {% load static %}
     <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'home' %}">
-      <img src="{% static 'img/logof1.png' %}" alt="F1 Logo" height="40" class="me-2">
+      <img src="{% static 'img/logof1.png' %}" alt="F1 Logo" height="38" class="me-2">
+      <span class="d-none d-sm-inline" style="font-size: 0.95rem; letter-spacing: 0.03em; color: var(--text-secondary);">F1 Apuestas</span>
     </a>
 
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -18,11 +18,11 @@
         <li class="nav-item">
           {% if room %}
           <a class="nav-link px-3" href="{% url 'home_sala' room.code %}">
-            <span class="me-1">🏠</span> Inicio
+            <i class="bi bi-house-door me-1"></i> Inicio
           </a>
           {% else %}
           <a class="nav-link px-3" href="{% url 'home' %}">
-            <span class="me-1">🏠</span> Inicio
+            <i class="bi bi-house-door me-1"></i> Inicio
           </a>
           {% endif %}
         </li>
@@ -30,12 +30,12 @@
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link px-3" href="{% url 'ver_salas' %}">
-            <span class="me-1">🏛️</span> Salas
+            <i class="bi bi-collection me-1"></i> Salas
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link px-3" href="{% url 'simulador' %}">
-            <span class="me-1">🧮</span> Simulador
+            <i class="bi bi-calculator me-1"></i> Simulador
           </a>
         </li>
         {% endif %}
@@ -43,7 +43,7 @@
         {% if room %}
         <li class="nav-item">
           <a class="nav-link px-3" href="{% url 'clasificacion_sala' room.code %}">
-            <span class="me-1">🏆</span> Clasificación
+            <i class="bi bi-trophy me-1"></i> Clasificación
           </a>
         </li>
         {% endif %}
@@ -51,7 +51,7 @@
         {% if user.is_staff %}
         <li class="nav-item">
           <a class="nav-link px-3" href="{% url 'admin_panel' %}">
-            <span class="me-1">⚙️</span> Admin
+            <i class="bi bi-gear me-1"></i> Admin
           </a>
         </li>
         {% endif %}
@@ -65,9 +65,9 @@
           <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
             data-bs-toggle="dropdown">
             <div
-              class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-              style="width: 32px; height: 32px;">
-              <span class="fw-bold">{{ user.username|slice:":1"|upper }}</span>
+              class="rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+              style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border: 2px solid rgba(255,255,255,0.15);">
+              <span class="fw-bold" style="font-size: 0.8rem;">{{ user.username|slice:":1"|upper }}</span>
             </div>
             <span>{{ user.username }}</span>
           </a>
@@ -76,7 +76,7 @@
               <form method="post" action="{% url 'logout' %}" class="px-2">
                 {% csrf_token %}
                 <button type="submit" class="dropdown-item text-danger">
-                  <span class="me-2">🚪</span> Cerrar sesión
+                  <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                 </button>
               </form>
             </li>
@@ -84,14 +84,12 @@
         </li>
         {% else %}
         <li class="nav-item me-2 mb-2 mb-lg-0">
-          <a class="btn btn-sm px-3 w-100" href="{% url 'login' %}"
-            style="background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.55);">
+          <a class="btn btn-sm px-3 w-100" href="{% url 'login' %}">
             Iniciar sesión
           </a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-sm px-3 fw-semibold w-100" href="{% url 'register' %}"
-            style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6);">
+          <a class="btn btn-sm px-3 fw-semibold w-100" href="{% url 'register' %}">
             Registrarse
           </a>
         </li>

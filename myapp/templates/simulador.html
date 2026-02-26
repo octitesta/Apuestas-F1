@@ -6,41 +6,41 @@
         <div class="col-12 col-md-8 col-lg-6">
 
             <div class="text-center mb-4">
-                <h1 class="display-6 fw-bold text-dark mb-1">🧮 Simulador de Puntos</h1>
-                <p class="text-muted">Elegí la posición de salida y llegada para ver cuántos puntos ganarías</p>
+                <h1 class="display-6 fw-bold mb-1">🧮 Simulador de Puntos</h1>
+                <p>Elegí la posición de salida y llegada para ver cuántos puntos ganarías</p>
             </div>
 
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
 
-                    <!-- Posición de Salida (Qualy) -->
+                    <!-- Qualifying Position -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">🏁 Posición de salida (Qualy)</label>
+                        <label class="form-label fw-semibold"><i class="bi bi-flag me-1"></i> Posición de salida (Qualy)</label>
                         <select id="posSalida" class="form-select form-select-lg">
                             <option value="">Seleccionar posición...</option>
                         </select>
                         <div id="multiplicadorInfo" class="form-text mt-2"></div>
                     </div>
 
-                    <!-- Posición de Llegada (Carrera) -->
+                    <!-- Race Position -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">🏎️ Posición de llegada (Carrera)</label>
+                        <label class="form-label fw-semibold"><i class="bi bi-car-front me-1"></i> Posición de llegada (Carrera)</label>
                         <select id="posLlegada" class="form-select form-select-lg">
                             <option value="">Seleccionar posición...</option>
                         </select>
                         <div id="puntosBaseInfo" class="form-text mt-2"></div>
                     </div>
 
-                    <hr>
+                    <hr style="border-color: var(--border-subtle);">
 
-                    <!-- Resultado -->
+                    <!-- Result -->
                     <div id="resultado" class="text-center py-4" style="display: none;">
-                        <div class="mb-2 text-muted">Puntos totales</div>
-                        <div id="puntosTotal" class="display-3 fw-bold text-primary mb-2">0</div>
-                        <div id="formulaDetalle" class="text-muted small"></div>
+                        <div class="mb-2">Puntos totales</div>
+                        <div id="puntosTotal" class="display-3 fw-bold mb-2" style="color: var(--text-accent); transition: transform 0.2s ease;">0</div>
+                        <div id="formulaDetalle" class="small"></div>
                     </div>
 
-                    <div id="sinResultado" class="text-center py-4 text-muted">
+                    <div id="sinResultado" class="text-center py-4">
                         <div style="font-size: 3rem; opacity: 0.3;">🏆</div>
                         <p>Seleccioná ambas posiciones para ver el resultado</p>
                     </div>
@@ -48,14 +48,14 @@
                 </div>
             </div>
 
-            <!-- Tabla de referencia -->
+            <!-- Reference Table -->
             <div class="card shadow-sm border-0 mt-4">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0 fw-bold">📊 Tablas de referencia</h5>
+                <div class="card-header border-0 py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-table me-2"></i>Tablas de referencia</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="row g-0">
-                        <!-- Puntos por posición -->
+                        <!-- Points per position -->
                         <div class="col-6 border-end">
                             <div class="p-3">
                                 <h6 class="fw-semibold text-center mb-3">Puntos por llegada</h6>
@@ -72,12 +72,12 @@
                                         <tr><td>P8</td><td>4</td></tr>
                                         <tr><td>P9</td><td>2</td></tr>
                                         <tr><td>P10</td><td>1</td></tr>
-                                        <tr><td>P11+</td><td class="text-muted">0</td></tr>
+                                        <tr><td>P11+</td><td>0</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <!-- Multiplicadores -->
+                        <!-- Multipliers -->
                         <div class="col-6">
                             <div class="p-3">
                                 <h6 class="fw-semibold text-center mb-3">Multiplicador (Qualy)</h6>
@@ -109,7 +109,7 @@ const PUNTOS_POR_POSICION = {
     6: 8, 7: 6, 8: 4, 9: 2, 10: 1
 };
 
-// Poblar selects
+// Populate selects
 const selSalida = document.getElementById('posSalida');
 const selLlegada = document.getElementById('posLlegada');
 
@@ -122,15 +122,15 @@ for (let i = 1; i <= 22; i++) {
     selLlegada.appendChild(opt2);
 }
 
-// Poblar tabla de multiplicadores
+// Populate multiplier table
 const tablaMulti = document.getElementById('tablaMultiplicadores');
 for (let i = 1; i <= 22; i++) {
     const row = document.createElement('tr');
-    row.innerHTML = `<td>P${i}</td><td>${i <= 10 ? '' : '<span class="text-success fw-bold">'}x${MULTIPLICADORES[i]}${i <= 10 ? '' : '</span>'}</td>`;
+    row.innerHTML = `<td>P${i}</td><td>${i <= 10 ? '' : '<span class="fw-bold" style="color: var(--accent-emerald);">'}x${MULTIPLICADORES[i]}${i <= 10 ? '' : '</span>'}</td>`;
     tablaMulti.appendChild(row);
 }
 
-// Calcular
+// Calculate
 function calcular() {
     const posSalida = parseInt(selSalida.value);
     const posLlegada = parseInt(selLlegada.value);
@@ -141,14 +141,14 @@ function calcular() {
     const sinResultado = document.getElementById('sinResultado');
 
     if (posSalida) {
-        multiplicadorInfo.innerHTML = `Multiplicador: <strong class="text-primary">x${MULTIPLICADORES[posSalida]}</strong>`;
+        multiplicadorInfo.innerHTML = `Multiplicador: <strong style="color: var(--text-accent);">x${MULTIPLICADORES[posSalida]}</strong>`;
     } else {
         multiplicadorInfo.innerHTML = '';
     }
 
     if (posLlegada) {
         const pb = PUNTOS_POR_POSICION[posLlegada] || 0;
-        puntosBaseInfo.innerHTML = `Puntos base: <strong class="text-primary">${pb}</strong>`;
+        puntosBaseInfo.innerHTML = `Puntos base: <strong style="color: var(--text-accent);">${pb}</strong>`;
     } else {
         puntosBaseInfo.innerHTML = '';
     }
@@ -165,7 +165,7 @@ function calcular() {
         resultado.style.display = 'block';
         sinResultado.style.display = 'none';
 
-        // Animación
+        // Animation
         document.getElementById('puntosTotal').style.transform = 'scale(1.2)';
         setTimeout(() => {
             document.getElementById('puntosTotal').style.transform = 'scale(1)';
@@ -178,9 +178,6 @@ function calcular() {
 
 selSalida.addEventListener('change', calcular);
 selLlegada.addEventListener('change', calcular);
-
-// Transición suave
-document.getElementById('puntosTotal').style.transition = 'transform 0.2s ease';
 </script>
 
 {% endblock %}

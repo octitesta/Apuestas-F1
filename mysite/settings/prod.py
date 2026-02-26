@@ -14,4 +14,6 @@ DATABASES = {
     )
 }
 
+
+print("DATABASE_URL:", os.environ.get("DATABASE_URL"))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

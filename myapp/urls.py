@@ -1,6 +1,6 @@
 from django.urls import path   
 from . import views 
-from .admin_panel import admin_panel, admin_cargar_qualy, admin_marcar_en_curso, admin_finalizar_carrera
+from .admin_panel import admin_panel, admin_cargar_qualy, admin_marcar_en_curso, admin_finalizar_carrera, admin_editar_qualy, admin_editar_carrera
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -21,6 +21,8 @@ urlpatterns = [
     # Admin Panel
     path('admin-panel/', admin_panel, name='admin_panel'),
     path('admin-panel/carrera/<int:carrera_id>/cargar-qualy/', admin_cargar_qualy, name='admin_cargar_qualy'),
+    path('admin-panel/carrera/<int:carrera_id>/editar-qualy/', admin_editar_qualy, name='admin_editar_qualy'),
     path('admin-panel/carrera/<int:carrera_id>/en-curso/', admin_marcar_en_curso, name='admin_marcar_en_curso'),
     path('admin-panel/carrera/<int:carrera_id>/finalizar/', admin_finalizar_carrera, name='admin_finalizar_carrera'),
+    path('admin-panel/carrera/<int:carrera_id>/editar-carrera/', admin_editar_carrera, name='admin_editar_carrera'),
 ]

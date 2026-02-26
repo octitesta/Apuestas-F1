@@ -28,7 +28,8 @@
 
     <!-- Race List -->
     <div class="row g-4">
-        {% for carrera in carreras %}
+        {% for item in carreras_data %}
+        {% with carrera=item.carrera qualy_results=item.qualy_results carrera_results=item.carrera_results %}
         <div class="col-12 col-md-6 col-xl-4">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header py-3 text-white"
@@ -120,7 +121,7 @@
                         </div>
                     </div>
 
-                    <!-- Action button -->
+                    <!-- Action buttons -->
                     {% if carrera.estado == 'pendiente' %}
                     <button class="btn btn-primary w-100 fw-semibold" data-bs-toggle="modal"
                         data-bs-target="#modalQualy{{ carrera.id }}">
@@ -128,33 +129,55 @@
                     </button>
 
                     {% elif carrera.estado == 'qualy_cargada' %}
-                    <form method="post" action="{% url 'admin_marcar_en_curso' carrera.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger w-100 fw-semibold"
-                            onclick="return confirm('¿Marcar {{ carrera.name }} como en curso?')">
-                            🏎️ Marcar En Curso
-                        </button>
-                    </form>
+                    <div class="d-flex gap-2 mb-2">
+                        <form method="post" action="{% url 'admin_marcar_en_curso' carrera.id %}" class="flex-grow-1">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger w-100 fw-semibold"
+                                onclick="return confirm('¿Marcar {{ carrera.name }} como en curso?')">
+                                🏎️ Marcar En Curso
+                            </button>
+                        </form>
+                    </div>
+                    <button class="btn btn-outline-warning w-100 btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalEditQualy{{ carrera.id }}">
+                        <i class="bi bi-pencil me-1"></i> Editar Qualy
+                    </button>
 
                     {% elif carrera.estado == 'en_curso' %}
-                    <button class="btn btn-success w-100 fw-semibold" data-bs-toggle="modal"
+                    <button class="btn btn-success w-100 fw-semibold mb-2" data-bs-toggle="modal"
                         data-bs-target="#modalFinalizar{{ carrera.id }}">
                         <i class="bi bi-check-lg me-1"></i> Finalizar Carrera
                     </button>
+                    <button class="btn btn-outline-warning w-100 btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalEditQualy{{ carrera.id }}">
+                        <i class="bi bi-pencil me-1"></i> Editar Qualy
+                    </button>
 
                     {% else %}
-                    <button class="btn btn-secondary w-100 fw-semibold" disabled>
+                    <button class="btn btn-secondary w-100 fw-semibold mb-2" disabled>
                         ✅ Carrera Finalizada
                     </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-warning flex-grow-1 btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalEditQualy{{ carrera.id }}">
+                            <i class="bi bi-pencil me-1"></i> Editar Qualy
+                        </button>
+                        <button class="btn btn-outline-primary flex-grow-1 btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalEditCarrera{{ carrera.id }}">
+                            <i class="bi bi-pencil me-1"></i> Editar Carrera
+                        </button>
+                    </div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- MODAL: Load Qualy -->
+        <!-- ============================================ -->
+        <!-- MODAL: CARGAR QUALY (solo para pendiente)   -->
+        <!-- ============================================ -->
         {% if carrera.estado == 'pendiente' %}
         <div class="modal fade" id="modalQualy{{ carrera.id }}" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content border-0 shadow-lg">
                     <div class="modal-header text-white" style="background: linear-gradient(135deg, #0a192f 0%, #112240 100%);">
                         <h5 class="modal-title fw-bold" style="color: #fff;">🏁 Cargar Qualy - {{ carrera.name }}</h5>
@@ -165,7 +188,7 @@
                         <div class="modal-body p-4">
                             <p class="mb-3">Asigná la posición de clasificación a cada piloto:</p>
                             {% for piloto in pilotos %}
-                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 rounded" style="background: var(--surface-2); border: 1px solid var(--border-subtle);">
+                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 rounded" style="background: var(--surface-2);">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3"
                                         style="width: 40px; height: 40px; background: rgba(42, 82, 152, 0.15);">
@@ -174,8 +197,7 @@
                                     <span class="fw-semibold">{{ piloto.name }}</span>
                                 </div>
                                 <div style="width: 100px;">
-                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm qualy-select"
-                                        data-form="formQualy{{ carrera.id }}" required>
+                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm" required>
                                         <option value="">Pos.</option>
                                         {% for i in positions %}
                                         <option value="{{ i }}">P{{ i }}</option>
@@ -197,10 +219,63 @@
         </div>
         {% endif %}
 
-        <!-- MODAL: Finalize Race -->
+        <!-- ============================================ -->
+        <!-- MODAL: EDITAR QUALY (para qualy_cargada+)   -->
+        <!-- ============================================ -->
+        <div class="modal fade" id="modalEditQualy{{ carrera.id }}" tabindex="-1"
+            data-results='{ {% for pid, pos in qualy_results.items %}"{{ pid }}": {{ pos }}{% if not forloop.last %}, {% endif %}{% endfor %} }'>
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                        <h5 class="modal-title fw-bold" style="color: #fff;">✏️ Editar Qualy - {{ carrera.name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" action="{% url 'admin_editar_qualy' carrera.id %}" id="formEditQualy{{ carrera.id }}">
+                        {% csrf_token %}
+                        <div class="modal-body p-4">
+                            {% if carrera.estado == 'finalizada' %}
+                            <div class="alert alert-warning border-0 mb-3">
+                                <small>⚠️ <strong>Atención:</strong> Esta carrera ya fue finalizada. Al editar la qualy se recalcularán los puntos automáticamente.</small>
+                            </div>
+                            {% endif %}
+                            <p class="mb-3">Modificá las posiciones de clasificación:</p>
+                            {% for piloto in pilotos %}
+                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 rounded" style="background: var(--surface-2);">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                                        style="width: 40px; height: 40px; background: rgba(42, 82, 152, 0.15);">
+                                        <span class="fw-bold" style="color: var(--text-accent);">{{ piloto.name|slice:":1"|upper }}</span>
+                                    </div>
+                                    <span class="fw-semibold">{{ piloto.name }}</span>
+                                </div>
+                                <div style="width: 100px;">
+                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm" data-piloto-id="{{ piloto.id }}" required>
+                                        <option value="">Pos.</option>
+                                        {% for i in positions %}
+                                        <option value="{{ i }}">P{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-warning fw-semibold">
+                                <i class="bi bi-check-lg me-1"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- MODAL: FINALIZAR CARRERA (solo en_curso)    -->
+        <!-- ============================================ -->
         {% if carrera.estado == 'en_curso' %}
         <div class="modal fade" id="modalFinalizar{{ carrera.id }}" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content border-0 shadow-lg">
                     <div class="modal-header text-white" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                         <h5 class="modal-title fw-bold" style="color: #fff;">✅ Finalizar - {{ carrera.name }}</h5>
@@ -211,7 +286,7 @@
                         <div class="modal-body p-4">
                             <p class="mb-3">Asigná la posición final de carrera a cada piloto:</p>
                             {% for piloto in pilotos %}
-                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 rounded" style="background: var(--surface-2); border: 1px solid var(--border-subtle);">
+                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 rounded" style="background: var(--surface-2);">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3"
                                         style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.15);">
@@ -220,8 +295,7 @@
                                     <span class="fw-semibold">{{ piloto.name }}</span>
                                 </div>
                                 <div style="width: 100px;">
-                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm carrera-select"
-                                        data-form="formFinalizar{{ carrera.id }}" required>
+                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm" required>
                                         <option value="">Pos.</option>
                                         {% for i in positions %}
                                         <option value="{{ i }}">P{{ i }}</option>
@@ -243,6 +317,58 @@
         </div>
         {% endif %}
 
+        <!-- ============================================ -->
+        <!-- MODAL: EDITAR RESULTADO CARRERA (finalizada) -->
+        <!-- ============================================ -->
+        {% if carrera.estado == 'finalizada' %}
+        <div class="modal fade" id="modalEditCarrera{{ carrera.id }}" tabindex="-1"
+            data-results='{ {% for pid, pos in carrera_results.items %}"{{ pid }}": {{ pos }}{% if not forloop.last %}, {% endif %}{% endfor %} }'>
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
+                        <h5 class="modal-title fw-bold" style="color: #fff;">✏️ Editar Resultados - {{ carrera.name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" action="{% url 'admin_editar_carrera' carrera.id %}" id="formEditCarrera{{ carrera.id }}">
+                        {% csrf_token %}
+                        <div class="modal-body p-4">
+                            <div class="alert alert-warning border-0 mb-3">
+                                <small>⚠️ <strong>Atención:</strong> Al guardar los cambios se recalcularán los puntos de todos los usuarios automáticamente.</small>
+                            </div>
+                            <p class="mb-3">Modificá las posiciones finales de carrera:</p>
+                            {% for piloto in pilotos %}
+                            <div class="d-flex align-items-center justify-content-between mb-3 p-3 rounded" style="background: var(--surface-2);">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                                        style="width: 40px; height: 40px; background: rgba(37, 99, 235, 0.15);">
+                                        <span class="fw-bold" style="color: var(--text-accent);">{{ piloto.name|slice:":1"|upper }}</span>
+                                    </div>
+                                    <span class="fw-semibold">{{ piloto.name }}</span>
+                                </div>
+                                <div style="width: 100px;">
+                                    <select name="posicion_{{ piloto.id }}" class="form-select form-select-sm" data-piloto-id="{{ piloto.id }}" required>
+                                        <option value="">Pos.</option>
+                                        {% for i in positions %}
+                                        <option value="{{ i }}">P{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary fw-semibold">
+                                <i class="bi bi-check-lg me-1"></i> Guardar y Recalcular Puntos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endwith %}
         {% endfor %}
     </div>
 
@@ -251,7 +377,7 @@
 <!-- JS: Duplicate position validation -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('form[id^="formQualy"], form[id^="formFinalizar"]').forEach(function(form) {
+    document.querySelectorAll('form[id^="formQualy"], form[id^="formFinalizar"], form[id^="formEditQualy"], form[id^="formEditCarrera"]').forEach(function(form) {
         form.addEventListener('submit', function(e) {
             const selects = form.querySelectorAll('select');
             const values = [];
@@ -278,6 +404,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 alert('Hay posiciones duplicadas. Cada piloto debe tener una posición diferente.');
                 return;
+            }
+        });
+    });
+});
+</script>
+
+<!-- JS: Pre-fill selects in edit modals with existing positions -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Listen for modal show events to pre-fill selects
+    document.querySelectorAll('.modal[id^="modalEdit"]').forEach(function(modal) {
+        modal.addEventListener('show.bs.modal', function() {
+            var raw = modal.getAttribute('data-results');
+            if (!raw) return;
+            try {
+                var results = JSON.parse(raw);
+                var selects = modal.querySelectorAll('select[data-piloto-id]');
+                selects.forEach(function(select) {
+                    var pilotoId = select.getAttribute('data-piloto-id');
+                    var pos = results[pilotoId];
+                    if (pos !== undefined) {
+                        select.value = String(pos);
+                    }
+                });
+            } catch(e) {
+                console.warn('Could not parse results:', e);
             }
         });
     });

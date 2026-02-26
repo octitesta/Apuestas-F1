@@ -795,6 +795,8 @@ code {
 .modal-body {
     padding: 1.5rem;
     color: var(--text-primary);
+    overflow-y: auto;
+    max-height: 60vh;
 }
 
 .modal-body .text-muted {
@@ -810,8 +812,12 @@ code {
 }
 
 .modal-footer {
-    border-top: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border-medium);
     padding: 1rem 1.5rem;
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
 }
 
 .btn-close-white {
